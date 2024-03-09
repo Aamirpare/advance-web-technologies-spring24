@@ -1,9 +1,16 @@
-const {connect, close, listAllFaculties, insertManyFaculties} = require("./mongo.client");
+// const {connect, close, listAllFaculties, insertManyFaculties} = require("./mongo.client");
 
-const main = async () => {
-    await connect().catch(console.log());
-    await listAllFaculties();
-    await close();
-}
+// (async () => {
+    //     await connect().catch(error => console.log(error));
+    //     await listAllFaculties();
+    //     await close();
+    // })();
 
-main();
+    
+const { StudentRepository } = require("./oop.mongo.client");
+(async ()=> {
+    const db = new StudentRepository();
+    await db.connect().catch(error => console.log(error));
+    await db.listAllFaculties();
+    await db.close();
+})();
