@@ -31,7 +31,6 @@ class StudentRepository{
 
     async listAllFaculties() {
         let cursor = this.client.db(this.databaseName).collection("Faculty").find();
-
         let results = cursor.toArray();
 
         console.log("The documents contained in the collection are listed under:");
