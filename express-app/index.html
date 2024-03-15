@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Products</title>
+    <style>
+        h1{
+            color: #f00;
+            font-family: sans-serif;
+        }
+        table{
+            border-collapse: collapse;
+        }
+        td, th{
+            padding: 10px;
+            border: 1px solid;
+        }
+    </style>
+</head>
+<body>
+    <h1>Welcome to Online Shopping</h1>
+    <div id="product">
+        <table>
+            <tr>
+                <th>Id</th>
+                <th>Name</th>
+                <th>Price</th>
+            </tr>
+            <tbody id="products">
+
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        async function loadProducts(){
+            let response = await fetch("http://localhost:4200/store/products");
+            let products = await response.json();
+            renderProducts( products);
+            console.log(products);
+        }
+        function renderProducts(products){
+            var content = "";
+            products.forEach(p => {
+               let row = `<tr>
+                    <td>${p.id}</td>
+                    <td>${p.name}</td>
+                    <td>${p.price}</td>
+                </tr>`;
+
+                content += row;
+            });
+            document.getElementById("products").innerHTML = content;
+        }
+        loadProducts();
+    </script>
+</body>
+</html>
