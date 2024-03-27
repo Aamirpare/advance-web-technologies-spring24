@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Products</title>
     <style>
+        body{
+            font-family: sans-serif;
+        }
         h1{
             color: #f00;
             font-family: sans-serif;
@@ -13,19 +16,60 @@
             border-collapse: collapse;
         }
         td, th{
-            padding: 10px;
+            padding: 15px;
             border: 1px solid;
+        }
+        .btn{
+            text-decoration: none;
+            font-size: 1rem;
+            color:#fff;
+            padding: 5px 10px;
+            border-radius: 4px;
+            box-shadow: 1px 3px 3px rgba(0,0,0, 0.5);
+        }
+        .btn-warning{
+            background-color: #f36900;
+        }
+        .btn-primary{
+            background-color: #3238e6;
+        }
+        input[type=text]{
+            padding:8px 10px;
+            border-radius: 4px;
+        }
+        .create-product{
+            display: none;
         }
     </style>
 </head>
 <body>
     <h1>Welcome to Online Shopping</h1>
+    
+    <div class="create-product">
+        <h1>Create New Product</h1>
+        <form action="http://localhost:4200/products" method="POST">
+            <pre>
+                Name : <input type="text" placeholder="product name"
+                name="name"> <br>
+                Price : <input type="text" placeholder="price"
+                name="price"> <br>
+                
+                <input class="btn btn-warning btn-submit" type="submit" value="Submit Form">
+            </pre>
+        </form>
+    </div>
+    
+    <div style="margin-bottom: 10px;">
+        <button class="btn btn-primary btn-create">Create</button>
+    </div>
+
     <div id="product">
         <table>
             <tr>
                 <th>Id</th>
                 <th>Name</th>
                 <th>Price</th>
+                <th>Actions</th>
             </tr>
             <tbody id="products">
 
@@ -33,13 +77,17 @@
         </table>
     </div>
 
+        
     <script>
+
         async function loadProducts(){
-            let response = await fetch("http://localhost:4200/store/products");
+            let response = await fetch("http://localhost:4200/products");
             let products = await response.json();
             renderProducts( products);
             console.log(products);
         }
+
+        //render products
         function renderProducts(products){
             var content = "";
             products.forEach(p => {
@@ -47,13 +95,46 @@
                     <td>${p.id}</td>
                     <td>${p.name}</td>
                     <td>${p.price}</td>
+                    <td>
+                        <a class="btn btn-warning btn-delete" href="#" product-id="${p.id}">Delete</a>
+                    </td>
                 </tr>`;
-
                 content += row;
             });
+
             document.getElementById("products").innerHTML = content;
+
+            const buttons = document.querySelectorAll(".btn-delete");
+            buttons.forEach(b=> {
+                b.addEventListener("click", (e)=>{
+                   const productId = e.target.getAttribute("product-id");
+                   deleteProduct(productId);
+                });
+            });
         }
+
+        //call load products
         loadProducts();
+
+        //delete product
+        async function deleteProduct (id){
+            const url = `/products/${id}`;
+            const response = await fetch(url, {
+                method : "DELETE",
+                headers : {
+                    "Content-Type" : "application/json" 
+                }
+            });
+            const result = await response.json();
+            if(result.redirect){
+                window.location.href = "/";
+            }
+        }
+
+        document.querySelector(".btn-create").addEventListener("click", (e)=>{
+            const element = document.querySelector(".create-product");
+            element.style["display"] = "block";
+        });
     </script>
 </body>
 </html>
